@@ -3,6 +3,7 @@ package springRest.service;
 import org.springframework.stereotype.Service;
 import springRest.dao.EmployeeDAO;
 import springRest.entity.Employee;
+import springRest.exceptions.EmployeeException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -25,7 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     @Transactional
     public Employee getEmployeeById(int id) {
-        return employeeDAO.getEmployeeById(id);
+        Employee employee = employeeDAO.getEmployeeById(id);
+        if (employee == null) {
+        throw new EmployeeException("Person with id = " + id + " doesn't exist");
+            }
+        return employee;
     }
 
     @Override
@@ -43,6 +48,11 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     @Transactional
     public void deleteEmployee(int id) {
+        Employee employee = employeeDAO.getEmployeeById(id);
+        if (employee == null) {
+            throw new EmployeeException("Person with id = " + id + " doesn't exist");
+        }
+
         employeeDAO.deleteEmployee(id);
     }
 }
